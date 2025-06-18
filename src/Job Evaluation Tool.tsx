@@ -47,7 +47,7 @@ const JobEvaluationConversionTool = () => {
     let fromKey: ConversionDataKeys, toKey: ConversionDataKeys;
     switch (fromSystem) {
       case "Total Hay Job Size":
-        fromKey = value >= 1261 ? 'fromHay' : 'toHay';
+        fromKey = 'fromHay';
         break;
       case "Hay Level":
         fromKey = 'hayLevel';
@@ -87,7 +87,12 @@ const JobEvaluationConversionTool = () => {
         return;
     }
 
-    const matchingRow = conversionData.find(row => row[fromKey] <= value && value <= (fromKey === 'toHay' ? row.toHay : row[fromKey]));
+    let matchingRow;
+    if (fromSystem === "Total Hay Job Size") {
+      matchingRow = conversionData.find(row => row.fromHay <= value && value <= row.toHay);
+    } else {
+      matchingRow = conversionData.find(row => row[fromKey] === value);
+    }
     if (matchingRow) {
       setResult(`${toSystem}: ${matchingRow[toKey]}`);
     } else {
