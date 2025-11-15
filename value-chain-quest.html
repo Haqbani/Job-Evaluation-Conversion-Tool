@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Value Chain Quest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --bg-gradient-start: #667eea;
+        --bg-gradient-end: #764ba2;
+        --glass-bg: rgba(255, 255, 255, 0.12);
+        --glass-border: rgba(255, 255, 255, 0.35);
+        --text-primary: #f4f7ff;
+        --text-secondary: rgba(255, 255, 255, 0.75);
+        --green: #4caf50;
+        --blue: #2196f3;
+        --orange: #ff9800;
+        --red: #e74c3c;
+        --gold: #ffd700;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+        color: var(--text-primary);
+        background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+        padding: 2.5rem 1.5rem 3rem;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        margin: 0;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+      }
+
+      .glass-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 18px;
+        padding: 1.2rem;
+        backdrop-filter: blur(14px);
+        box-shadow: 0 15px 35px rgba(18, 24, 56, 0.25);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .glass-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 45px rgba(18, 24, 56, 0.35);
+      }
+
+      .stat-title {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.4rem;
+      }
+
+      .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        letter-spacing: 0.02rem;
+      }
+
+      .progress-card {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+      }
+
+      .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+      }
+
+      .progress-track {
+        width: 100%;
+        height: 16px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.15);
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        width: 0%;
+        border-radius: 10px;
+        background: linear-gradient(90deg, var(--blue), var(--green));
+        transition: width 0.6s ease;
+      }
+
+      .phase-card {
+        display: grid;
+        grid-template-columns: 60px 1fr;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .phase-indicator {
+        width: 60px;
+        height: 60px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .phase-text h2 {
+        font-size: 1.3rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .phase-text p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+      }
+
+      .activities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.2rem;
+      }
+
+      .activity-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        min-height: 320px;
+        border: 1.5px solid transparent;
+        transition: transform 0.3s ease, border 0.3s ease;
+      }
+
+      .activity-card:hover {
+        transform: translateY(-6px);
+      }
+
+      .activity-card.identified {
+        border-color: rgba(76, 175, 80, 0.8);
+      }
+
+      .activity-card.analyzed {
+        border-color: rgba(33, 150, 243, 0.85);
+      }
+
+      .activity-card.optimized {
+        border-color: rgba(255, 152, 0, 0.9);
+      }
+
+      .activity-header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+      }
+
+      .activity-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
+
+      .activity-cost {
+        font-size: 1rem;
+        color: var(--text-secondary);
+      }
+
+      .status-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+
+      .status-chip {
+        padding: 0.25rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        text-transform: uppercase;
+        letter-spacing: 0.04rem;
+      }
+
+      .primary-button,
+      .secondary-button {
+        border: none;
+        border-radius: 12px;
+        padding: 0.65rem 0.9rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+      }
+
+      .primary-button {
+        background: linear-gradient(135deg, rgba(33, 150, 243, 0.85), rgba(118, 75, 162, 0.85));
+        color: #ffffff;
+      }
+
+      .secondary-button {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+      }
+
+      .primary-button:hover,
+      .secondary-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(18, 24, 56, 0.25);
+        filter: brightness(1.05);
+      }
+
+      .primary-button:disabled,
+      .secondary-button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .cost-drivers {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        padding: 0.75rem;
+        background: rgba(118, 75, 162, 0.18);
+        border-radius: 14px;
+      }
+
+      .cost-drivers h4 {
+        font-size: 0.95rem;
+        letter-spacing: 0.02rem;
+      }
+
+      .cost-drivers ul {
+        margin: 0.35rem 0 0;
+        padding-left: 1.2rem;
+      }
+
+      .cost-drivers li {
+        margin-bottom: 0.35rem;
+        font-size: 0.9rem;
+      }
+
+      .actions-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: auto;
+      }
+
+      .action-button {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0.9rem;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+
+      .action-button:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      .action-button.disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .action-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      .action-tier {
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.04rem;
+        text-transform: uppercase;
+      }
+
+      .action-meta {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      #notifications {
+        position: fixed;
+        top: 1.5rem;
+        right: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        z-index: 1000;
+        pointer-events: none;
+      }
+
+      .notification {
+        min-width: 260px;
+        padding: 0.85rem 1rem;
+        border-radius: 14px;
+        background: rgba(0, 0, 0, 0.65);
+        color: #ffffff;
+        font-weight: 600;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
+        transform: translateX(150%);
+        opacity: 0;
+        animation: slide-in 0.4s ease forwards;
+        pointer-events: none;
+      }
+
+      .notification.success {
+        background: rgba(76, 175, 80, 0.9);
+      }
+
+      .notification.warning {
+        background: rgba(255, 193, 7, 0.92);
+        color: #1e1e1e;
+      }
+
+      .notification.error {
+        background: rgba(231, 76, 60, 0.92);
+      }
+
+      @keyframes slide-in {
+        from {
+          transform: translateX(150%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      #winOverlay {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(10, 12, 32, 0.75);
+        backdrop-filter: blur(12px);
+        z-index: 1200;
+        padding: 2rem;
+      }
+
+      #winOverlay.active {
+        display: flex;
+      }
+
+      .win-card {
+        max-width: 520px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+      }
+
+      .win-card h2 {
+        font-size: 2.1rem;
+      }
+
+      .final-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        text-align: left;
+      }
+
+      .final-stat {
+        padding: 0.9rem 1rem;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+      }
+
+      .final-stat span {
+        display: block;
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.7);
+        text-transform: uppercase;
+        letter-spacing: 0.05rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .final-stat strong {
+        font-size: 1.2rem;
+      }
+
+      .restart-button {
+        align-self: center;
+        padding: 0.75rem 1.6rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 14px;
+        cursor: pointer;
+        background: linear-gradient(135deg, rgba(255, 152, 0, 0.95), rgba(255, 215, 0, 0.95));
+        color: #1e1e1e;
+        font-weight: 700;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      .restart-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(255, 193, 7, 0.45);
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 1.8rem 1rem 2.5rem;
+        }
+
+        .phase-card {
+          grid-template-columns: 1fr;
+        }
+
+        .phase-indicator {
+          justify-self: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="stats-grid">
+        <div class="glass-card">
+          <div class="stat-title">Round</div>
+          <div class="stat-value" id="roundStat">1 / 12</div>
+        </div>
+        <div class="glass-card">
+          <div class="stat-title">Budget</div>
+          <div class="stat-value" id="budgetStat">$10,000</div>
+        </div>
+        <div class="glass-card">
+          <div class="stat-title">XP</div>
+          <div class="stat-value" id="xpStat">0</div>
+        </div>
+        <div class="glass-card">
+          <div class="stat-title">Current Cost / Unit</div>
+          <div class="stat-value" id="costStat">$9.00</div>
+        </div>
+        <div class="glass-card">
+          <div class="stat-title">Target Cost / Unit</div>
+          <div class="stat-value">$6.30</div>
+        </div>
+      </header>
+
+      <section class="glass-card progress-card">
+        <div class="progress-header">
+          <span>Cost Reduction Progress</span>
+          <span id="progressLabel">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </section>
+
+      <section class="glass-card phase-card">
+        <div class="phase-indicator" id="phaseIndicator">1</div>
+        <div class="phase-text">
+          <h2 id="phaseTitle">Phase 1: Discovery</h2>
+          <p id="phaseDescription">
+            Click each activity to identify it, reveal its cost per unit, and earn XP to prepare for deeper analysis.
+          </p>
+        </div>
+      </section>
+
+      <main class="activities-grid" id="activitiesContainer"></main>
+    </div>
+
+    <div id="notifications"></div>
+
+    <div id="winOverlay">
+      <div class="glass-card win-card">
+        <h2 id="winTitle">Congratulations!</h2>
+        <p id="winSubtitle">You transformed the value chain.</p>
+        <div class="final-stats">
+          <div class="final-stat">
+            <span>Cost / Unit</span>
+            <strong id="finalCost">$0.00</strong>
+          </div>
+          <div class="final-stat">
+            <span>Total XP</span>
+            <strong id="finalXp">0</strong>
+          </div>
+          <div class="final-stat">
+            <span>Rounds Used</span>
+            <strong id="finalRounds">0</strong>
+          </div>
+          <div class="final-stat">
+            <span>Profit Improvement</span>
+            <strong id="finalProfit">0%</strong>
+          </div>
+        </div>
+        <button class="restart-button" id="restartButton">Play Again</button>
+      </div>
+    </div>
+
+    <script>
+      const activityTemplates = [
+        {
+          key: "inbound",
+          name: "Inbound Logistics",
+          baseCost: 0.5,
+          description: "Managing inbound materials and suppliers.",
+          costDrivers: [
+            "Supplier distance",
+            "Order frequency",
+            "Inventory storage time",
+            "Quality inspection rigor",
+          ],
+          actions: [
+            {
+              tier: "Quick Fix",
+              label: "Negotiate bulk discount",
+              cost: 500,
+              reduction: 0.08,
+              description: "Trim unit costs with better supplier terms.",
+            },
+            {
+              tier: "Strategic Move",
+              label: "Switch to local supplier",
+              cost: 2000,
+              reduction: 0.18,
+              description: "Shorten supply routes and reduce logistics costs.",
+            },
+            {
+              tier: "Major Overhaul",
+              label: "Automated inventory system",
+              cost: 5000,
+              reduction: 0.35,
+              description: "Digitize receiving and storage for major savings.",
+            },
+          ],
+        },
+        {
+          key: "operations",
+          name: "Operations",
+          baseCost: 1.2,
+          description: "Transforming inputs into finished goods.",
+          costDrivers: [
+            "Labor efficiency",
+            "Equipment utilization",
+            "Quality control checks",
+            "Product complexity",
+          ],
+          actions: [
+            {
+              tier: "Quick Fix",
+              label: "Staff training program",
+              cost: 500,
+              reduction: 0.1,
+              description: "Boost frontline productivity with targeted upskilling.",
+            },
+            {
+              tier: "Strategic Move",
+              label: "Workflow optimization",
+              cost: 2000,
+              reduction: 0.2,
+              description: "Redesign processes to eliminate waste and delays.",
+            },
+            {
+              tier: "Major Overhaul",
+              label: "Automation equipment",
+              cost: 5000,
+              reduction: 0.4,
+              description: "Invest in automation for transformative efficiency.",
+            },
+          ],
+        },
+        {
+          key: "outbound",
+          name: "Outbound Logistics",
+          baseCost: 3.8,
+          description: "Distributing products to customers.",
+          costDrivers: [
+            "Number of delivery stops",
+            "Urban traffic patterns",
+            "Market share density",
+            "Product variety complexity",
+          ],
+          actions: [
+            {
+              tier: "Quick Fix",
+              label: "Route optimization",
+              cost: 500,
+              reduction: 0.1,
+              description: "Re-map routes to trim travel time and fuel usage.",
+            },
+            {
+              tier: "Strategic Move",
+              label: "Regional hubs",
+              cost: 2000,
+              reduction: 0.22,
+              description: "Stage inventory closer to demand clusters.",
+            },
+            {
+              tier: "Major Overhaul",
+              label: "Partner with carrier",
+              cost: 5000,
+              reduction: 0.38,
+              description: "Outsource logistics to a high-performing partner.",
+            },
+          ],
+        },
+        {
+          key: "marketing",
+          name: "Marketing & Sales",
+          baseCost: 2,
+          description: "Driving demand and closing deals.",
+          costDrivers: [
+            "Customer acquisition cost",
+            "Marketing channel mix",
+            "Sales team size",
+            "Brand awareness",
+          ],
+          actions: [
+            {
+              tier: "Quick Fix",
+              label: "Digital focus shift",
+              cost: 500,
+              reduction: 0.12,
+              description: "Double down on high-ROI digital channels.",
+            },
+            {
+              tier: "Strategic Move",
+              label: "Marketing automation",
+              cost: 2000,
+              reduction: 0.25,
+              description: "Automate nurture journeys and campaign execution.",
+            },
+            {
+              tier: "Major Overhaul",
+              label: "AI-powered targeting",
+              cost: 5000,
+              reduction: 0.35,
+              description: "Leverage AI to sharpen audience and spend.",
+            },
+          ],
+        },
+        {
+          key: "service",
+          name: "After-Sales Service",
+          baseCost: 1.5,
+          description: "Supporting customers after the sale.",
+          costDrivers: [
+            "Product return rate",
+            "Support ticket volume",
+            "Warranty claims",
+            "Customer service channels",
+          ],
+          actions: [
+            {
+              tier: "Quick Fix",
+              label: "Self-service portal",
+              cost: 500,
+              reduction: 0.15,
+              description: "Empower customers to solve simple issues quickly.",
+            },
+            {
+              tier: "Strategic Move",
+              label: "Predictive maintenance",
+              cost: 2000,
+              reduction: 0.28,
+              description: "Use data to prevent service incidents.",
+            },
+            {
+              tier: "Major Overhaul",
+              label: "Quality improvement",
+              cost: 5000,
+              reduction: 0.4,
+              description: "Upgrade products to virtually eliminate failures.",
+            },
+          ],
+        },
+      ];
+
+      const phaseDetails = {
+        discovery: {
+          title: "Phase 1: Discovery",
+          description:
+            "Click each activity to identify it, reveal its cost per unit, and earn XP to prepare for deeper analysis.",
+          indicator: "1",
+        },
+        analysis: {
+          title: "Phase 2: Analysis",
+          description:
+            "Review identified activities to reveal their cost drivers. Analyze them all to unlock optimization strategies.",
+          indicator: "2",
+        },
+        optimization: {
+          title: "Phase 3: Optimization",
+          description:
+            "Invest in improvement actions to reduce costs, manage the budget, and monitor sales impacts round by round.",
+          indicator: "3",
+        },
+      };
+
+      function createInitialState() {
+        return {
+          budget: 10000,
+          round: 1,
+          xp: 0,
+          phase: "discovery",
+          baseCost: 9,
+          currentCost: 9,
+          targetCost: 6.3,
+          sales: 100,
+          baseSales: 100,
+          roundLocked: false,
+          gameOver: false,
+          activities: activityTemplates.map((activity) => ({
+            key: activity.key,
+            name: activity.name,
+            baseCost: activity.baseCost,
+            currentCost: activity.baseCost,
+            description: activity.description,
+            costDrivers: activity.costDrivers,
+            actions: activity.actions,
+            identified: false,
+            analyzed: false,
+            optimized: false,
+            optimizedAction: null,
+          })),
+        };
+      }
+
+      let gameState = createInitialState();
+
+      function formatCurrency(value) {
+        return `$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }
+
+      function updateStats() {
+        const roundStat = document.getElementById("roundStat");
+        const budgetStat = document.getElementById("budgetStat");
+        const xpStat = document.getElementById("xpStat");
+        const costStat = document.getElementById("costStat");
+        const progressFill = document.getElementById("progressFill");
+        const progressLabel = document.getElementById("progressLabel");
+
+        roundStat.textContent = `${gameState.round} / 12`;
+        budgetStat.textContent = formatCurrency(gameState.budget);
+        xpStat.textContent = gameState.xp.toLocaleString();
+        costStat.textContent = formatCurrency(gameState.currentCost);
+
+        const progressRaw = ((gameState.baseCost - gameState.currentCost) / (gameState.baseCost - gameState.targetCost)) * 100;
+        const progress = Math.max(0, Math.min(100, progressRaw));
+        progressFill.style.width = `${progress}%`;
+        progressLabel.textContent = `${progress.toFixed(0)}%`;
+      }
+
+      function updatePhaseDisplay() {
+        const phaseTitle = document.getElementById("phaseTitle");
+        const phaseDescription = document.getElementById("phaseDescription");
+        const phaseIndicator = document.getElementById("phaseIndicator");
+
+        const details = phaseDetails[gameState.phase];
+        phaseTitle.textContent = details.title;
+        phaseDescription.textContent = details.description;
+        phaseIndicator.textContent = details.indicator;
+      }
+
+      function renderActivities() {
+        const container = document.getElementById("activitiesContainer");
+        container.innerHTML = "";
+
+        gameState.activities.forEach((activity, index) => {
+          const card = document.createElement("article");
+          card.className = "glass-card activity-card";
+          if (activity.identified) card.classList.add("identified");
+          if (activity.analyzed) card.classList.add("analyzed");
+          if (activity.optimized) card.classList.add("optimized");
+
+          const header = document.createElement("div");
+          header.className = "activity-header";
+
+          const title = document.createElement("h3");
+          title.className = "activity-name";
+          title.textContent = activity.name;
+
+          const cost = document.createElement("p");
+          cost.className = "activity-cost";
+          cost.textContent = activity.identified
+            ? `${formatCurrency(activity.currentCost)} per unit`
+            : "Identify to reveal cost";
+
+          header.appendChild(title);
+          header.appendChild(cost);
+
+          const badges = document.createElement("div");
+          badges.className = "status-badges";
+
+          if (activity.identified) {
+            const badge = document.createElement("span");
+            badge.className = "status-chip";
+            badge.textContent = "Identified";
+            badges.appendChild(badge);
+          }
+          if (activity.analyzed) {
+            const badge = document.createElement("span");
+            badge.className = "status-chip";
+            badge.textContent = "Analyzed";
+            badges.appendChild(badge);
+          }
+          if (activity.optimized) {
+            const badge = document.createElement("span");
+            badge.className = "status-chip";
+            badge.textContent = "Optimized";
+            badges.appendChild(badge);
+          }
+
+          card.appendChild(header);
+          card.appendChild(badges);
+
+          if (!activity.identified) {
+            const identifyBtn = document.createElement("button");
+            identifyBtn.className = "primary-button";
+            identifyBtn.textContent = "Identify Activity (+50 XP)";
+            identifyBtn.addEventListener("click", () => identifyActivity(index));
+            identifyBtn.disabled = gameState.phase !== "discovery";
+            card.appendChild(identifyBtn);
+          } else if (!activity.analyzed) {
+            const analyzeBtn = document.createElement("button");
+            analyzeBtn.className = "primary-button";
+            analyzeBtn.textContent = "Analyze Cost Drivers (+100 XP)";
+            analyzeBtn.addEventListener("click", () => analyzeActivity(index));
+            analyzeBtn.disabled = !["analysis", "optimization"].includes(gameState.phase);
+            card.appendChild(analyzeBtn);
+          }
+
+          if (activity.analyzed) {
+            const drivers = document.createElement("div");
+            drivers.className = "cost-drivers";
+            const driversTitle = document.createElement("h4");
+            driversTitle.textContent = "Cost Drivers";
+            const driverList = document.createElement("ul");
+            activity.costDrivers.forEach((driver) => {
+              const li = document.createElement("li");
+              li.textContent = driver;
+              driverList.appendChild(li);
+            });
+            drivers.appendChild(driversTitle);
+            drivers.appendChild(driverList);
+            card.appendChild(drivers);
+          }
+
+          if (activity.analyzed) {
+            const actionsPanel = document.createElement("div");
+            actionsPanel.className = "actions-panel";
+
+            if (!activity.optimized) {
+              activity.actions.forEach((action, actionIndex) => {
+                const actionButton = document.createElement("button");
+                actionButton.className = "action-button";
+
+                const details = document.createElement("div");
+                details.className = "action-details";
+
+                const tier = document.createElement("span");
+                tier.className = "action-tier";
+                tier.textContent = `${action.tier}`;
+
+                const label = document.createElement("span");
+                label.textContent = action.label;
+
+                const meta = document.createElement("span");
+                meta.className = "action-meta";
+                meta.textContent = `${formatCurrency(action.cost)} • -${Math.round(action.reduction * 100)}% cost`;
+
+                details.appendChild(tier);
+                details.appendChild(label);
+                details.appendChild(meta);
+
+                actionButton.appendChild(details);
+
+                if (gameState.phase !== "optimization" || gameState.budget < action.cost || gameState.gameOver) {
+                  actionButton.classList.add("disabled");
+                } else {
+                  actionButton.addEventListener("click", () => takeAction(index, actionIndex));
+                }
+
+                actionsPanel.appendChild(actionButton);
+              });
+            } else if (activity.optimizedAction) {
+              const summary = document.createElement("div");
+              summary.className = "cost-drivers";
+              const title = document.createElement("h4");
+              title.textContent = "Optimization Applied";
+              const detail = document.createElement("p");
+              detail.textContent = `${activity.optimizedAction.tier}: ${activity.optimizedAction.label}`;
+              summary.appendChild(title);
+              summary.appendChild(detail);
+              actionsPanel.appendChild(summary);
+            }
+
+            card.appendChild(actionsPanel);
+          }
+
+          container.appendChild(card);
+        });
+      }
+
+      function identifyActivity(index) {
+        const activity = gameState.activities[index];
+        if (gameState.phase !== "discovery") {
+          showMessage("warning", "Discovery window closed. Proceed to analysis.");
+          return;
+        }
+        if (activity.identified) {
+          showMessage("warning", `${activity.name} already identified.`);
+          return;
+        }
+        activity.identified = true;
+        gameState.xp += 50;
+        if (gameState.round < 3) {
+          gameState.round += 1;
+        }
+        showMessage("success", `Identified ${activity.name}! +50 XP`);
+        updateCurrentCost();
+        updateStats();
+        renderActivities();
+        checkPhaseComplete();
+      }
+
+      function analyzeActivity(index) {
+        const activity = gameState.activities[index];
+        if (!activity.identified) {
+          showMessage("error", "Identify the activity before analyzing it.");
+          return;
+        }
+        if (activity.analyzed) {
+          showMessage("warning", `${activity.name} already analyzed.`);
+          return;
+        }
+        if (!["analysis", "optimization"].includes(gameState.phase)) {
+          showMessage("warning", "Complete discovery to begin analysis.");
+          return;
+        }
+        activity.analyzed = true;
+        const xpGain = activity.costDrivers.length * 25;
+        let message = `Analyzed ${activity.name}! +${xpGain} XP`;
+        gameState.xp += xpGain;
+        if (activity.key === "outbound") {
+          gameState.xp += 200;
+          message += " • +200 XP bonus for tackling Outbound Logistics";
+        }
+        if (gameState.round < 6) {
+          gameState.round = Math.max(4, gameState.round + 1);
+        }
+        showMessage("success", message);
+        updateStats();
+        renderActivities();
+        checkPhaseComplete();
+      }
+
+      function takeAction(activityIndex, actionIndex) {
+        const activity = gameState.activities[activityIndex];
+        const action = activity.actions[actionIndex];
+
+        if (gameState.phase !== "optimization") {
+          showMessage("warning", "Optimization actions unlock in Phase 3.");
+          return;
+        }
+        if (activity.optimized) {
+          showMessage("warning", `${activity.name} already optimized.`);
+          return;
+        }
+        if (gameState.budget < action.cost) {
+          showMessage("error", "Insufficient budget for this action.");
+          return;
+        }
+        if (gameState.round >= 12 && gameState.roundLocked) {
+          showMessage("error", "No rounds remaining. Assess results!");
+          return;
+        }
+
+        gameState.budget -= action.cost;
+        const originalCost = activity.currentCost;
+        const reducedCost = originalCost * (1 - action.reduction);
+        activity.currentCost = Math.max(0, +(reducedCost.toFixed(2)));
+        activity.optimized = true;
+        activity.optimizedAction = action;
+
+        updateCurrentCost();
+
+        showMessage(
+          "success",
+          `${action.tier} applied to ${activity.name}! Cost reduced from ${formatCurrency(originalCost)} to ${formatCurrency(
+            activity.currentCost
+          )}.`
+        );
+
+        const salesOutcome = Math.random();
+        if (salesOutcome < 0.3) {
+          gameState.sales = +(gameState.sales * 0.97).toFixed(2);
+          gameState.xp += 50;
+          showMessage("warning", "Sales dipped 3% this round. +50 XP for resilience.");
+        } else if (salesOutcome < 0.7) {
+          gameState.xp += 100;
+          showMessage("success", "Sales held steady. +100 XP for maintaining momentum!");
+        } else {
+          gameState.sales = +(gameState.sales * 1.05).toFixed(2);
+          gameState.xp += 100;
+          showMessage("success", "Sales surged 5%! +100 XP for strategic impact.");
+        }
+
+        if (gameState.round < 12) {
+          gameState.round += 1;
+        } else {
+          gameState.round = 12;
+          gameState.roundLocked = true;
+        }
+
+        updateStats();
+        renderActivities();
+        checkPhaseComplete();
+      }
+
+      function updateCurrentCost() {
+        const total = gameState.activities.reduce((sum, activity) => sum + activity.currentCost, 0);
+        gameState.currentCost = +(total.toFixed(2));
+      }
+
+      function checkPhaseComplete() {
+        if (gameState.phase === "discovery") {
+          const allIdentified = gameState.activities.every((activity) => activity.identified);
+          if (allIdentified) {
+            gameState.phase = "analysis";
+            gameState.round = Math.max(4, gameState.round);
+            showMessage("success", "Discovery complete! Begin analyzing cost drivers.");
+            updatePhaseDisplay();
+            renderActivities();
+          }
+        } else if (gameState.phase === "analysis") {
+          const allAnalyzed = gameState.activities.every((activity) => activity.analyzed);
+          if (allAnalyzed) {
+            gameState.phase = "optimization";
+            gameState.round = Math.max(7, gameState.round);
+            showMessage("success", "Analysis complete! Unlocking optimization actions.");
+            updatePhaseDisplay();
+            renderActivities();
+          }
+        } else if (gameState.phase === "optimization") {
+          const allOptimized = gameState.activities.every((activity) => activity.optimized);
+          if (allOptimized || gameState.round >= 12 || gameState.currentCost <= gameState.targetCost) {
+            checkWinCondition();
+          }
+        }
+      }
+
+      function checkWinCondition() {
+        if (gameState.gameOver) return;
+
+        const costReduction = ((gameState.baseCost - gameState.currentCost) / gameState.baseCost) * 100;
+        const salesIncrease = ((gameState.sales - gameState.baseSales) / gameState.baseSales) * 100;
+
+        if (costReduction >= 10 || gameState.round >= 12) {
+          let medal = "Bronze Strategist";
+          let emoji = "🥉";
+
+          if (costReduction >= 30 && salesIncrease >= 15) {
+            medal = "Platinum Visionary";
+            emoji = "🏆";
+          } else if (costReduction >= 30 && salesIncrease >= 5) {
+            medal = "Gold Transformer";
+            emoji = "🥇";
+          } else if (costReduction >= 20) {
+            medal = "Silver Optimizer";
+            emoji = "🥈";
+          }
+
+          showWinScreen({ medal, emoji, costReduction, salesIncrease });
+        }
+      }
+
+      function showWinScreen({ medal, emoji, costReduction, salesIncrease }) {
+        gameState.gameOver = true;
+        const overlay = document.getElementById("winOverlay");
+        const title = document.getElementById("winTitle");
+        const subtitle = document.getElementById("winSubtitle");
+        const finalCost = document.getElementById("finalCost");
+        const finalXp = document.getElementById("finalXp");
+        const finalRounds = document.getElementById("finalRounds");
+        const finalProfit = document.getElementById("finalProfit");
+
+        const profitImprovement = ((gameState.baseCost * gameState.baseSales - gameState.currentCost * gameState.sales) /
+          (gameState.baseCost * gameState.baseSales)) *
+          100;
+
+        title.textContent = `${emoji} ${medal}`;
+        subtitle.textContent = `Cost reduction: ${costReduction.toFixed(1)}% • Sales change: ${salesIncrease.toFixed(1)}%`;
+        finalCost.textContent = formatCurrency(gameState.currentCost);
+        finalXp.textContent = gameState.xp.toLocaleString();
+        finalRounds.textContent = gameState.round;
+        finalProfit.textContent = `${profitImprovement.toFixed(1)}%`;
+
+        overlay.classList.add("active");
+      }
+
+      function showMessage(type, text) {
+        const container = document.getElementById("notifications");
+        const message = document.createElement("div");
+        message.className = `notification ${type}`;
+        message.textContent = text;
+        container.appendChild(message);
+
+        setTimeout(() => {
+          message.style.opacity = "0";
+          message.style.transform = "translateX(150%)";
+        }, 2600);
+
+        setTimeout(() => {
+          message.remove();
+        }, 3000);
+      }
+
+      function resetGame() {
+        gameState = createInitialState();
+        document.getElementById("winOverlay").classList.remove("active");
+        updatePhaseDisplay();
+        updateCurrentCost();
+        updateStats();
+        renderActivities();
+      }
+
+      document.getElementById("restartButton").addEventListener("click", resetGame);
+
+      updatePhaseDisplay();
+      updateCurrentCost();
+      updateStats();
+      renderActivities();
+    </script>
+  </body>
+</html>
